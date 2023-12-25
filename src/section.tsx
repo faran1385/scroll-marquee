@@ -1,5 +1,5 @@
 import React, {useRef} from "react";
-import {useGSAP} from "@gsap/react";
+import {ContextSafeFunc, useGSAP} from "@gsap/react";
 import {gsap} from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 
@@ -14,9 +14,9 @@ interface SectionProps {
 
 export const Section: React.FC<SectionProps> = (T) => {
     const {id, imageUrl, title, texts} = T;
-    const section: React.MutableRefObject<HTMLElement | null> = useRef(null)
     const sectionBackground: React.MutableRefObject<HTMLImageElement | null> = useRef(null)
-    useGSAP(() => {
+    const viewBtn: React.MutableRefObject<HTMLButtonElement | null> = useRef(null)
+    const {contextSafe} = useGSAP(() => {
         const Entering = () => {
             if (id !== 1) {
                 gsap.timeline().to(`.image-wrapper-${id}`, {
@@ -48,7 +48,6 @@ export const Section: React.FC<SectionProps> = (T) => {
                 }, ">")
             }
         }
-
         const Leaving = (isBackLeave: boolean) => {
             if (id !== 1 && isBackLeave) {
                 gsap.timeline().to(`.image-wrapper-${id}`, {
@@ -84,8 +83,21 @@ export const Section: React.FC<SectionProps> = (T) => {
             }
         })
     })
+
+    const viewBtnMouseIn = contextSafe(() => {
+        gsap.to(".section-container__view-btn",{
+            transform:"rotate(0)"
+        })
+    })
+
+    const viewBtnMouseOut = contextSafe(() => {
+        gsap.to(".section-container__view-btn",{
+            transform:"rotate(45deg)"
+        })
+    })
+
     return (
-        <section key={id} style={{zIndex: id}} ref={section}
+        <section key={id} style={{zIndex: id}}
                  className={`section-container absolute section-${id} w-screen px-8`}>
             <figure style={{clipPath: id !== 1 ? "polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%)" : "none"}}
                     className={`${id % 2 === 0 && id !== 1 ? "rotate-45" : id !== 1 ? "-rotate-45" : ""} w-full inset-0 h-full absolute image-wrapper-${id}`}>
@@ -101,8 +113,8 @@ export const Section: React.FC<SectionProps> = (T) => {
             </div>
 
             <div className={"h-full w-full flex justify-end items-center"}>
-                <button
-                    className={`${id !== 1 ? "translate-y-4 opacity-0" : ""} section-container__view-btn section-${id}-view-btn  text-white border-white border-solid border-2 rounded-full`}>VIEW
+                <button onMouseEnter={() => viewBtnMouseIn()} onMouseOut={() => viewBtnMouseOut()}
+                        className={`${id !== 1 ? "translate-y-4 opacity-0" : ""} section-container__view-btn section-${id}-view-btn  text-white border-white border-solid border-2 rounded-full`}>VIEW
                 </button>
             </div>
             <h1 className={`${id !== 1 ? "translate-y-4 opacity-0" : ""} section-container__title section-${id}-title absolute bottom-0 text-white`}>{title}</h1>

@@ -6,7 +6,6 @@ function App() {
 
     return (
         <main className={"sections-container"}>
-
             <div className="home-sections">
                 <Section id={1} texts={["2021", "Fashion & Accessories", "Branding","Website"]} title={"NEARA"}
                          imageUrl={"https://assets.website-files.com/6266fd2c922d57e602d9502d/6266fd2c922d571ab9d9502f_neara-cover-home.jpg"}/>
