@@ -1,5 +1,5 @@
 import React, {useRef} from "react";
-import {ContextSafeFunc, useGSAP} from "@gsap/react";
+import {useGSAP} from "@gsap/react";
 import {gsap} from "gsap";
 import {ScrollTrigger} from "gsap/ScrollTrigger";
 
@@ -9,15 +9,18 @@ interface SectionProps {
     imageUrl: string,
     title: string,
     texts: string[],
-    id: number
+    id: number,
+    setDirection: React.Dispatch<React.SetStateAction<"up" | "down" | null>>,
+    direction: "up" | "down" | null,
+    setPage: React.Dispatch<React.SetStateAction<{ pageNumber: number, mode: "enter" | "enterBack" }>>
 }
 
 export const Section: React.FC<SectionProps> = (T) => {
-    const {id, imageUrl, title, texts} = T;
+    const {id, imageUrl, title, texts, setPage, direction, setDirection} = T;
     const sectionBackground: React.MutableRefObject<HTMLImageElement | null> = useRef(null)
-    const viewBtn: React.MutableRefObject<HTMLButtonElement | null> = useRef(null)
+
     const {contextSafe} = useGSAP(() => {
-        const Entering = () => {
+        const Entering = (mode: "enter" | "enterBack") => {
             if (id !== 1) {
                 gsap.timeline().to(`.image-wrapper-${id}`, {
                     clipPath: "polygon(0px 0px, 100% 0%, 100% 100%, 0% 100%)",
@@ -47,6 +50,7 @@ export const Section: React.FC<SectionProps> = (T) => {
                     stagger: .2
                 }, ">")
             }
+            setPage({pageNumber: id, mode})
         }
         const Leaving = (isBackLeave: boolean) => {
             if (id !== 1 && isBackLeave) {
@@ -76,23 +80,24 @@ export const Section: React.FC<SectionProps> = (T) => {
                 },
                 pin: true,
                 scrub: 3,
-                onEnter: () => Entering(),
-                onEnterBack: () => Entering(),
+                onEnter: () => Entering("enter"),
+                onEnterBack: () => Entering("enterBack"),
                 onLeaveBack: () => Leaving(true),
                 onLeave: () => Leaving(false),
+                onUpdate: (self) => direction !== "down" && self.direction === 1 ? setDirection("down") : direction !== "up" && self.direction === -1 ? setDirection("up") : ""
             }
         })
     })
 
     const viewBtnMouseIn = contextSafe(() => {
-        gsap.to(".section-container__view-btn",{
-            transform:"rotate(0)"
+        gsap.to(".section-container__view-btn", {
+            transform: "rotate(0)"
         })
     })
 
     const viewBtnMouseOut = contextSafe(() => {
-        gsap.to(".section-container__view-btn",{
-            transform:"rotate(45deg)"
+        gsap.to(".section-container__view-btn", {
+            transform: "rotate(45deg)"
         })
     })
 

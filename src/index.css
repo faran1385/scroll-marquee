@@ -34,7 +34,7 @@ body {
 }
 .page-number{
     font-size: calc(.5rem + 2vw);
-    margin-bottom: calc(.1em + .5rem);
+    padding-bottom: calc(.1em + .5rem);
     justify-content: center;
     align-items: end;
 }
