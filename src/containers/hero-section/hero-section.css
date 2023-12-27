@@ -1,0 +1,20 @@
+
+.hero-section{
+    height: 100vh;
+}
+
+.hero-section__image{
+    transform: rotateZ(-9deg);
+}
+
+@media (min-width: 1200px) {
+    .hero-section__image-large{
+        height:94vh;
+    }
+}
+
+@media (max-width: 1200px) {
+    .hero-section__image-small{
+        height: 70vh;
+    }
+}

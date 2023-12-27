@@ -1,0 +1,18 @@
+.marquee__title{
+    font-weight: bolder;
+    text-wrap: nowrap;
+}
+
+@media (min-width: 1200px) {
+    .marquee__title-large-size{
+        font-size: 12vw;
+        line-height: 1.1;
+    }
+}
+
+@media (max-width: 1200px) {
+    .marquee__title-small-size{
+        font-size: 8rem;
+        line-height: 1.1;
+    }
+}
