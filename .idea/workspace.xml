@@ -5,15 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="728bfa5c-6d5f-43df-925e-f439b4aeea78" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/components/ui/marquee/marquee.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/components/ui/marquee/marquee.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/containers/hero-section/hero-section.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/containers/hero-section/hero-section.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/customHooks/isInViewPort.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ui/retrailer/retrailer.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ui/slidingImage/slidingImage.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/components/ui/slidingImage/slidingImage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/containers/imageSlider/imageSlider.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/containers/imageSlider/imageSlider.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/containers/retailers/retailers.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/containers/retailers/retailers.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/ui/marquee/marquee.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/ui/marquee/marquee.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/section.tsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,8 +28,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="CSS File" />
+        <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="CSS File" />
       </list>
     </option>
   </component>
@@ -74,7 +77,11 @@
       <option name="presentableId" value="Default" />
       <updated>1703600176239</updated>
       <workItem from="1703600177273" duration="9216000" />
-      <workItem from="1703673758292" duration="12368000" />
+      <workItem from="1703673758292" duration="24989000" />
+      <workItem from="1703876939225" duration="6587000" />
+      <workItem from="1703944591810" duration="26314000" />
+      <workItem from="1704012394286" duration="4913000" />
+      <workItem from="1704028658066" duration="25375000" />
     </task>
     <servers />
   </component>

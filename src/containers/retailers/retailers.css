@@ -1,0 +1,42 @@
+.retailers {
+    border-radius: 3rem;
+    margin-top: 100px;
+    height: 45rem;
+    overflow: hidden;
+}
+
+.retailers__title {
+    font-weight: bolder;
+    line-height: 1;
+}
+
+.retailers__title-desktop {
+    font-size: 7vw;
+}
+
+.retailers__title-mobile {
+    font-size: 17vw;
+}
+
+@media (min-width: 640px) {
+    .retailers__title-mobile {
+        font-size: 10vw;
+    }
+}
+
+
+.retailers__button {
+    background: #caf587;
+    font-weight: bolder;
+    transition: all ease 200ms;
+    padding: 2vh 5vw;
+}
+
+.retailers__button:hover {
+    background: black;
+    color: #f0f0f0;
+}
+
+.retailers__button-mobile{
+
+}

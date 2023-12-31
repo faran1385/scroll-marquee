@@ -1,7 +1,8 @@
-import React, { useRef} from "react";
+import React, {useRef} from "react";
 import "./marquee.css"
 import {useGSAP} from "@gsap/react";
 import gsap from "gsap";
+import {ScrollTrigger} from "gsap/ScrollTrigger"
 
 interface MarqueeProps {
     titles: string[],
@@ -11,15 +12,52 @@ interface MarqueeProps {
 }
 
 export const Marquee: React.FC<MarqueeProps> = (T) => {
-    const container = useRef(null)
+    const container = useRef<null | HTMLDivElement>(null)
     const {moving, titles, position, zIndex} = T
     useGSAP(() => {
-        gsap.to(container.current, {
-            transform: `translateX(${moving === "backward" ? "-50%" : "0%"})`,
-            duration: 20,
-            repeat: -1,
-            ease: "none"
+        gsap.registerPlugin(ScrollTrigger)
+
+        let movingMode: "play" | "reverse" = "reverse"
+        let translate = moving === "backward" ? -50 : 0
+
+        let
+            marqueeTl = gsap.timeline().to(container.current, {
+                transform: `translateX(${translate}%)`,
+                duration: 20,
+                repeat: -1,
+                ease: "none"
+            })
+
+        let scrollTriggerTimeline = gsap.timeline().to(container.current, {
+            transform: `translateX(${translate}%)`,
         })
+
+        ScrollTrigger.create({
+            animation: scrollTriggerTimeline,
+            scrub: 2,
+            trigger: ".hero-section",
+            start: "top top",
+            end: "+=700",
+            onUpdate: (self) => {
+                marqueeTl.pause()
+                if (self.direction === 1) {
+                    movingMode = "play"
+                } else {
+                    movingMode = "reverse"
+                }
+            },
+            onScrubComplete: () => {
+                setTime(marqueeTl)
+            }
+        })
+
+        const setTime = (timeline: gsap.core.Timeline) => {
+            let movedTranslateX = ((container.current as HTMLDivElement).style.transform.slice((container.current as HTMLDivElement).style.transform.indexOf("(") + 1, (container.current as HTMLDivElement).style.transform.indexOf(",")))
+            let movedNumber = +(movedTranslateX.indexOf("px") !== -1 ? movedTranslateX.slice(0, movedTranslateX.indexOf("px")) : movedTranslateX.slice(0, movedTranslateX.length - 1))
+            let movedPercent = (movedNumber + (Math.abs(movedNumber * 2))) * 100 / 50
+            let time = translate === 0 ? 20 - (20 * movedPercent / 100) : 20 * movedPercent / 100
+            timeline[movingMode](time)
+        }
     })
     return (<>
         <div ref={container} style={{zIndex}}

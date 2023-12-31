@@ -1,0 +1,8 @@
+.sliding-image__image {
+    aspect-ratio: 1/1.5;
+    object-fit: cover;
+}
+
+.sliding-image:nth-child(2n) {
+    margin-top: 10vh;
+}
