@@ -1,8 +1,9 @@
 import "./imageSlider.css"
 import {SlidingImage} from "../../components/ui/slidingImage/slidingImage";
-import {ContextSafeFunc, useGSAP} from "@gsap/react";
+import {useGSAP} from "@gsap/react";
 import gsap from "gsap"
 import {useRef, useState} from "react";
+import {ScrollTrigger} from "gsap/ScrollTrigger"
 
 const imageURls: string[] = ["https://assets.website-files.com/63b6f4497a8b7545922c200a/63b7afeea857158307b15514_DSC_6155_2x_e623f3c5-e04f-4ebb-98db-3ae5b58d7b0c_1000x.png", "https://assets.website-files.com/63b6f4497a8b7545922c200a/63b7b03efd7a427451f8ff16_Mask_Group_46_2x_47f014d7-9bb6-4551-a658-b993ab736d5a_1000x-p-500.png", "https://assets.website-files.com/63b6f4497a8b7545922c200a/63b7b011196ba12bc2ce8f82_Mask_Group_7_2x_cf7efe7a-e47c-4c5f-a1a1-27802437d4cb_1000x-p-500.png", "https://assets.website-files.com/63b6f4497a8b7545922c200a/63b7b02251c786e411c22dcb_12_2x_968916f4-fd4e-420b-8ff7-a841b5ad93e0_1000x-p-500.webp"]
 
@@ -11,21 +12,66 @@ export const ImageSlider = () => {
     const pauseBtn = useRef<null | HTMLButtonElement>(null)
     const [isMoving, setMoving] = useState(true)
     useGSAP(() => {
-        let tl = gsap.to(".slider", {
+        let playingMode: "play" | "reverse" = "play"
+        let isMoving = true;
+        let marqueeTl = gsap.timeline().to(".slider", {
             x: "-100%",
             duration: 10,
             repeat: -1,
             overwrite: true,
-            ease: "none"
+            ease: "none",
+            onReverseComplete: () => {
+                gsap.set(".slider", {x: "-100%"})
+                marqueeTl.reverse(0)
+            }
         })
-        let isMoving = true;
+
+
+        let scrollTl = gsap.timeline().to(".slider", {
+            x: "-100%",
+        })
+
+        let triggerOBJ = ScrollTrigger.create({
+            animation: scrollTl,
+            trigger: ".retailers-container",
+            start: "bottom top",
+            endTrigger: ".image-slider",
+            end: "bottom bottom",
+            scrub: 2,
+            onUpdate: (self) => {
+                marqueeTl.pause()
+
+                if (self.direction === 1) {
+                    playingMode = "play"
+                } else {
+                    playingMode = "reverse"
+                }
+            },
+            onScrubComplete: () => {
+                setTime(marqueeTl, "slider", 100, playingMode)
+            }
+        })
+
+        const setTime = (timeline: gsap.core.Timeline, targetSelector: string, translate: number, movingMode: "play" | "reverse") => {
+            let targets = document.querySelectorAll(`.${targetSelector}`)
+            targets.forEach((target) => {
+                let movedTranslateX = ((target as HTMLDivElement).style.transform.slice((target as HTMLDivElement).style.transform.indexOf("(") + 1, (target as HTMLDivElement).style.transform.indexOf(",")))
+                let movedNumber = +(movedTranslateX.indexOf("px") !== -1 ? movedTranslateX.slice(0, movedTranslateX.indexOf("px")) : movedTranslateX.slice(0, movedTranslateX.length - 1))
+                let movedPercent = movedNumber > 0 ? movedNumber : movedNumber + 100
+                let time = movedPercent * 10 / translate
+                timeline[movingMode](time)
+            })
+        }
+
         const move = () => {
             if (isMoving) {
                 const target = document.querySelector(".slider") as HTMLElement;
                 let progress = Math.abs(+(target.style.transform.slice(target.style.transform.indexOf("(") + 1, target.style.transform.indexOf(",")).slice(1, target.style.transform.slice(target.style.transform.indexOf("(") + 1, target.style.transform.indexOf(",")).indexOf("%"))))
-                tl.play(progress / 10)
+                marqueeTl.play(progress / 10)
+                triggerOBJ.enable()
             } else {
-                tl.pause()
+                marqueeTl.pause()
+                triggerOBJ.disable(false)
                 let pauseTl = gsap.timeline().to(".slider", {
                     x: "+=-2.5%",
                     duration: .625,

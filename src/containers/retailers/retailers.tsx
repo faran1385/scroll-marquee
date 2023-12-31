@@ -51,7 +51,6 @@ export const Retailers: React.FC = () => {
             endTrigger: ".retailers-container",
             end: "bottom top",
             scrub: 2,
-            markers: true,
             onUpdate: (self) => {
                 marqueeUpTl.pause()
                 if (self.direction === 1) {
@@ -72,7 +71,6 @@ export const Retailers: React.FC = () => {
             endTrigger: ".retailers-container",
             end: "bottom top",
             scrub: 2,
-            markers: true,
             onUpdate: (self) => {
                 marqueeDownTl.pause()
                 if (self.direction === 1) {
