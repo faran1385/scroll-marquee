@@ -33,7 +33,6 @@ export const ImageSlider = () => {
             animation: scrollTl,
             trigger: ".retailers-container",
             start: "center top",
-            markers: true,
             endTrigger: ".image-slider",
             end: "bottom bottom",
             scrub: true,
