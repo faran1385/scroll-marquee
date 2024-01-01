@@ -15,22 +15,23 @@ export const Marquee: React.FC<MarqueeProps> = (T) => {
     const container = useRef<null | HTMLDivElement>(null)
     const {moving, titles, position, zIndex} = T
     useGSAP(() => {
-        gsap.registerPlugin(ScrollTrigger)
+        gsap.registerPlugin(ScrollTrigger);
 
-        let movingMode: "play" | "reverse" = "reverse"
-        let translate = moving === "backward" ? -50 : 0
+        let movingMode: "play" | "reverse" = "reverse";
+        let translate = moving === "backward" ? -50 : 0;
 
-        let
-            marqueeTl = gsap.timeline().to(container.current, {
-                transform: `translateX(${translate}%)`,
-                duration: 20,
-                repeat: -1,
-                ease: "none"
-            })
-
-        let scrollTriggerTimeline = gsap.timeline().to(container.current, {
+        let marqueeTl = gsap.timeline().to(container.current, {
             transform: `translateX(${translate}%)`,
-        })
+            duration: 20,
+            repeat: -1,
+            ease: "none",
+            onReverseComplete: () => {
+                gsap.set(container.current, {transform: `translateX(${translate}%)`})
+                marqueeTl.reverse(0)
+            },
+        });
+
+        let scrollTriggerTimeline = gsap.timeline()
 
         ScrollTrigger.create({
             animation: scrollTriggerTimeline,
@@ -39,26 +40,31 @@ export const Marquee: React.FC<MarqueeProps> = (T) => {
             start: "top top",
             end: "+=700",
             onUpdate: (self) => {
-                marqueeTl.pause()
                 if (self.direction === 1) {
                     movingMode = "play"
+                    let time = (marqueeTl.time() + .3) >= 20 ? 0 : marqueeTl.time() + .3
+                    marqueeTl.play(time)
+
                 } else {
                     movingMode = "reverse"
+                    let time = (marqueeTl.time() - .3) < 0 ? 0 : marqueeTl.time() - .3
+                    marqueeTl.reverse(time)
+
                 }
             },
             onScrubComplete: () => {
-                setTime(marqueeTl)
+                setTime(marqueeTl);
             }
-        })
+        });
 
         const setTime = (timeline: gsap.core.Timeline) => {
-            let movedTranslateX = ((container.current as HTMLDivElement).style.transform.slice((container.current as HTMLDivElement).style.transform.indexOf("(") + 1, (container.current as HTMLDivElement).style.transform.indexOf(",")))
-            let movedNumber = +(movedTranslateX.indexOf("px") !== -1 ? movedTranslateX.slice(0, movedTranslateX.indexOf("px")) : movedTranslateX.slice(0, movedTranslateX.length - 1))
-            let movedPercent = (movedNumber + (Math.abs(movedNumber * 2))) * 100 / 50
-            let time = translate === 0 ? 20 - (20 * movedPercent / 100) : 20 * movedPercent / 100
-            timeline[movingMode](time)
-        }
-    })
+            let movedTranslateX = ((container.current as HTMLDivElement).style.transform.slice((container.current as HTMLDivElement).style.transform.indexOf("(") + 1, (container.current as HTMLDivElement).style.transform.indexOf(",")));
+            let movedNumber = +(movedTranslateX.indexOf("px") !== -1 ? movedTranslateX.slice(0, movedTranslateX.indexOf("px")) : movedTranslateX.slice(0, movedTranslateX.length - 1));
+            let movedPercent = (movedNumber + (Math.abs(movedNumber * 2))) * 100 / 50;
+            let time = translate === 0 ? 20 - (20 * movedPercent / 100) : 20 * movedPercent / 100;
+            timeline[movingMode](time);
+        };
+    });
     return (<>
         <div ref={container} style={{zIndex}}
              className={`flex h-2/4 w-fit relative items-${position} ${moving === "forward" ? "-translate-x-1/2" : ""}`}>

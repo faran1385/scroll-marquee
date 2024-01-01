@@ -19,7 +19,6 @@ export const Retailers: React.FC = () => {
             onReverseComplete: () => {
                 gsap.set(".retailer-up", {y: "-100%"})
                 marqueeUpTl.reverse(0)
-                console.log("S")
             }
         })
 
@@ -31,18 +30,13 @@ export const Retailers: React.FC = () => {
             onReverseComplete: () => {
                 gsap.set(".retailer-down", {y: "+=100%"})
                 marqueeDownTl.reverse(0)
-                console.log("S")
             }
         })
 
 
-        let scrollUpTl = gsap.timeline().to(".retailer-up", {
-            y: `-100%`,
-        })
+        let scrollUpTl = gsap.timeline()
 
-        let scrollDownTl = gsap.timeline().to(".retailer-down", {
-            y: `+=100%`,
-        })
+        let scrollDownTl = gsap.timeline()
 
         ScrollTrigger.create({
             animation: scrollUpTl,
@@ -52,11 +46,15 @@ export const Retailers: React.FC = () => {
             end: "bottom top",
             scrub: 2,
             onUpdate: (self) => {
-                marqueeUpTl.pause()
                 if (self.direction === 1) {
                     upTlPlayingMode = "play"
+                    let time = (marqueeUpTl.time() + .1) >= 10 ? 0 : marqueeUpTl.time() + .1
+
+                    marqueeUpTl.play(time)
                 } else {
                     upTlPlayingMode = "reverse"
+                    let time = (marqueeUpTl.time() - .1) >= 10 ? 0 : marqueeUpTl.time() - .1
+                    marqueeUpTl.reverse(time)
                 }
             },
             onScrubComplete: () => {
@@ -72,11 +70,16 @@ export const Retailers: React.FC = () => {
             end: "bottom top",
             scrub: 2,
             onUpdate: (self) => {
-                marqueeDownTl.pause()
                 if (self.direction === 1) {
                     downTlPlayingMode = "play"
+                    let time = (marqueeDownTl.time() + .1) >= 10 ? 0 : marqueeDownTl.time() + .1
+
+                    marqueeDownTl.play(time)
+
                 } else {
                     downTlPlayingMode = "reverse"
+                    let time = (marqueeDownTl.time() - .1) < 0 ? 0 : marqueeDownTl.time() - .1
+                    marqueeDownTl.reverse(time)
                 }
             },
             onScrubComplete: () => {

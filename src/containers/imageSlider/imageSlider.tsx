@@ -14,7 +14,7 @@ export const ImageSlider = () => {
     useGSAP(() => {
         let playingMode: "play" | "reverse" = "play"
         let isMoving = true;
-        let marqueeTl = gsap.timeline().to(".slider", {
+        let marqueeTl = gsap.to(".slider", {
             x: "-100%",
             duration: 10,
             repeat: -1,
@@ -23,36 +23,35 @@ export const ImageSlider = () => {
             onReverseComplete: () => {
                 gsap.set(".slider", {x: "-100%"})
                 marqueeTl.reverse(0)
-            }
+            },
         })
 
 
-        let scrollTl = gsap.timeline().to(".slider", {
-            x: "-100%",
-        })
+        let scrollTl = gsap.timeline()
 
         let triggerOBJ = ScrollTrigger.create({
             animation: scrollTl,
             trigger: ".retailers-container",
-            start: "bottom top",
+            start: "center top",
+            markers: true,
             endTrigger: ".image-slider",
             end: "bottom bottom",
-            scrub: 2,
+            scrub: true,
             onUpdate: (self) => {
-                marqueeTl.pause()
-
                 if (self.direction === 1) {
                     playingMode = "play"
+                    let time = (marqueeTl.time() + .2) >= 10 ? 0 : marqueeTl.time() + .2
+                    marqueeTl.play(time)
+
                 } else {
                     playingMode = "reverse"
+                    let time = (marqueeTl.time() - .2) < 0 ? 0 : marqueeTl.time() - .2
+                    marqueeTl.reverse(time)
                 }
-            },
-            onScrubComplete: () => {
-                setTime(marqueeTl, "slider", 100, playingMode)
             }
         })
 
-        const setTime = (timeline: gsap.core.Timeline, targetSelector: string, translate: number, movingMode: "play" | "reverse") => {
+        const setTime = (timeline: gsap.core.Tween, targetSelector: string, translate: number, movingMode: "play" | "reverse") => {
             let targets = document.querySelectorAll(`.${targetSelector}`)
             targets.forEach((target) => {
                 let movedTranslateX = ((target as HTMLDivElement).style.transform.slice((target as HTMLDivElement).style.transform.indexOf("(") + 1, (target as HTMLDivElement).style.transform.indexOf(",")))
@@ -63,17 +62,21 @@ export const ImageSlider = () => {
             })
         }
 
-        const move = () => {
+        const move = (playingMode: "play" | "reverse") => {
             if (isMoving) {
-                const target = document.querySelector(".slider") as HTMLElement;
-                let progress = Math.abs(+(target.style.transform.slice(target.style.transform.indexOf("(") + 1, target.style.transform.indexOf(",")).slice(1, target.style.transform.slice(target.style.transform.indexOf("(") + 1, target.style.transform.indexOf(",")).indexOf("%"))))
-                marqueeTl.play(progress / 10)
-                triggerOBJ.enable()
+                triggerOBJ.enable(false,false)
+                let target = document.querySelector(".slider") as HTMLElement
+                let marqueeStyle = target.style.transform
+                let targetTranslate = marqueeStyle.slice(marqueeStyle.indexOf("(") + 1, marqueeStyle.indexOf(","))
+                let numberedMarquee = Math.abs(+(targetTranslate.slice(0, targetTranslate.length - 1))) % 100
+                let time = 10 * numberedMarquee / 100
+                console.log(playingMode)
+                marqueeTl[playingMode](time)
             } else {
                 marqueeTl.pause()
                 triggerOBJ.disable(false)
                 let pauseTl = gsap.timeline().to(".slider", {
-                    x: "+=-2.5%",
+                    x: `+=${playingMode === "play" ? "-" : ""}2.5%`,
                     duration: .625,
                     ease: "power1.out",
                     onUpdate: () => {
@@ -84,10 +87,11 @@ export const ImageSlider = () => {
                 });
             }
         }
-        move()
+        move("play")
         const pauseBtnClick = () => {
             isMoving = !isMoving;
-            move()
+
+            move(playingMode)
         }
         (pauseBtn.current as HTMLButtonElement).addEventListener("click", pauseBtnClick)
 
